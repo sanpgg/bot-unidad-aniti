@@ -1,0 +1,200 @@
+import { join } from 'path'
+import { createBot, createProvider, createFlow, addKeyword, utils, EVENTS } from '@builderbot/bot'
+import { MemoryDB as Database } from '@builderbot/bot'
+import { BaileysProvider as Provider } from '@builderbot/provider-baileys'
+
+const PORT = process.env.PORT ?? 3008
+    
+const menuOptions = [
+    '1️⃣ ¿Dónde puedo presentar una denuncia en contra de un servidor público de San Pedro?',
+    '2️⃣ ¿Qué cosas puedo denunciar?',
+    '3️⃣ ¿Qué se necesita para presentar una denuncia?',
+    '4️⃣ ¿Se necesita evidencia para presentar una denuncia?',
+    '5️⃣ ¿Las denuncias pueden ser anónimas?',
+    '6️⃣ Quiero presentar una denuncia',
+].join('\n')
+
+const respuestasMenu: Record<string, string> = {
+    '1': `Puedes hacerlo a través de diversas vías, todas administradas por la Unidad Anticorrupción de la Secretaría de la Contraloría y Transparencia Municipal, las cuales son las siguientes:\n\n` +
+        `🔹 Sistema Integral de Denuncias: https://denuncia.sanpedro.gob.mx/\n` +
+        `🔹 Teléfono: 81-21-27-27-40\n` +
+        `🔹 Correo electrónico: unidad.anticorrupcion@sanpedro.gob.mx\n` +
+        `🔹 Presencial: En las oficinas ubicadas en calle Independencia #316 esquina con Corregidora en el 4to piso, Casco Urbano de San Pedro Garza García, Nuevo León.`,
+
+    '2': `Las denuncias recibidas por el Municipio de San Pedro Garza García son en contra de servidores públicos municipales y de particulares relacionados con el servicio público, las cuales pueden tratarse sobre:\n\n` +
+        `- Faltas de respeto\n- Incumplimiento de funciones\n- Obtención de un beneficio indebido\n- Desvío de recursos públicos\n- Abuso de funciones\n- Conflicto de interés\n- Tráfico de influencias, entre otras.`,
+
+    '3': `Es necesario que proporciones elementos de tiempo, modo y lugar, es decir, que tu denuncia responda las siguientes preguntas:\n\n` +
+        `❓ ¿Qué pasó?\n❓ ¿Cómo pasó?\n❓ ¿Cuándo pasó?\n❓ ¿Dónde pasó?\n\n` +
+        `Procura ser claro y preciso, y mantener la calma al redactar tu denuncia.`,
+
+    '4': `No es obligatorio, sin embargo, si tienes fotografías, videos, documentos o testigos, debes proporcionarlos en tu denuncia para fortalecer la investigación.`,
+
+    '5': `Sí, las denuncias pueden ser anónimas. Sin embargo, proporcionar tus datos ayuda a la autoridad investigadora a contactarte si se requiere información adicional.`,
+
+    '6': `Las denuncias contra servidores públicos y particulares relacionados con el servicio público de San Pedro Garza García, Nuevo León son recibidas por la Unidad Anticorrupción de la Secretaría de la Contraloría ` + 
+        `y Transparencia Municipal. Puedes presentarla a través de las siguientes vías:.\n\n` +
+        `🔹 Sistema Integral de Denuncias: https://denuncia.sanpedro.gob.mx/\n` +
+        `🔹 Teléfono: 81-21-27-27-40\n` +
+        `🔹 Correo electrónico: unidad.anticorrupcion@sanpedro.gob.mx\n` +
+        `🔹 Presencial: Calle Independencia #316 esquina con Corregidora, 4to piso, Casco Urbano de San Pedro Garza García, Nuevo León.`
+}
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
+const setInactivityTimeout = async (
+  ctx: any,
+  flowDynamic: any,
+  state: any,
+  ms: number = 300000
+) => {
+  const userId = ctx.from
+  const timerId = setTimeout(async () => {
+    await flowDynamic( 'Gracias por contactarnos. Estamos para ayudarte. 👋\n\n' +
+  'Si deseas comenzar de nuevo, puedes escribir la palabra *Hola*.')
+  }, ms)
+
+  await state.update({ [`timeout_${userId}`]: timerId })
+}
+
+
+const reconsultaFlow = addKeyword<Provider, Database>(utils.setEvent('RECONSULTA_FLOW'))
+    .addAnswer('¿Deseas consultar otra opción?\n1️⃣ Sí\n2️⃣ No', { capture: true }, async (ctx, { flowDynamic, gotoFlow, fallBack, state }) => {
+        const timeoutKey = `timeout_${ctx.from}`
+        const previousTimeout = await state.get(timeoutKey)
+        if (previousTimeout) {
+    clearTimeout(previousTimeout)
+    await state.update({ [`timeout_${ctx.from}`]: null }) // limpia la referencia
+}
+
+        const respuesta = ctx.body.trim()
+
+              if (respuesta === 'menú' || respuesta === 'menu') {
+        return gotoFlow(menuFlow)
+    }
+
+        if (respuesta === '1') {
+            return gotoFlow(menuFlow)
+        } else if (respuesta === '2') {
+            await flowDynamic( 'Gracias por contactarnos. Estamos para ayudarte. 👋\n\n' +
+  'Si deseas comenzar de nuevo, puedes escribir la palabra *hola*.')
+        } else {
+            return fallBack('Por favor responde con *1* para Sí o *2* para No.')
+        }
+    })
+
+const menuFlow = addKeyword<Provider, Database>(['menú', 'menu'])
+.addAction(async (ctx, { flowDynamic, state }) => {
+  await flowDynamic('Selecciona una opción del menú:\n\n' + menuOptions)
+  await setInactivityTimeout(ctx, flowDynamic, state) // ⏰
+})
+.addAnswer('', { capture: true }, async (ctx, { flowDynamic, fallBack, gotoFlow, state }) => {
+    const input = ctx.body.trim()
+
+      if (input === 'menú' || input === 'menu') {
+        return gotoFlow(menuFlow)
+    }
+
+    const timeoutKey = `timeout_${ctx.from}`
+    const previousTimeout = await state.get(timeoutKey)
+    
+    if (previousTimeout) {
+    clearTimeout(previousTimeout)
+    await state.update({ [`timeout_${ctx.from}`]: null }) // limpia la referencia
+}
+
+    if (respuestasMenu[input]) {
+        await flowDynamic(respuestasMenu[input])
+        await sleep(1500)
+
+        // Mover mensaje de reconsulta al flujo siguiente
+        return gotoFlow(reconsultaFlow)
+    } else {
+        return fallBack('Por favor selecciona una opción válida del 1 al 6 o escribe *MENÚ* para verlas nuevamente.')
+    }
+})
+
+/*.addAnswer('Bienvenid@, ¿cuál es tu nombre?', { capture: true }, async (ctx, { state, flowDynamic }) => {
+    await setInactivityTimeout(ctx, flowDynamic, state) // 30s para nombre
+     console.log('📦 Contexto completo:', JSON.stringify(ctx, null, 2)) // 👈 aquí
+})*/
+
+
+const welcomeFlow = addKeyword<Provider, Database>(['hi', 'hello', 'hola', EVENTS.WELCOME, 'menu', 'menú'])
+     .addAction(async (ctx, { state, flowDynamic, gotoFlow }) => {
+        const name = ctx.pushName || 'Usuario'
+
+        await state.update({ name })
+
+        await flowDynamic(
+            `Bienvenid@ *${name}*\n\n` +
+            `Usted se está comunicando a la *Unidad Anticorrupción de la Secretaría de la Contraloría y Transparencia* de *San Pedro Garza García, Nuevo León*.\n\n` +
+            `Puedes ver nuestro aviso de privacidad ingresando al siguiente enlace:\n` +
+            `http://bit.ly/4j6nC1X\n`
+        )
+        return gotoFlow(menuFlow)
+    })
+
+
+const main = async () => {
+
+    const adapterFlow = createFlow([
+    welcomeFlow,
+    menuFlow,
+    reconsultaFlow
+])
+
+
+    
+    const adapterProvider = createProvider(Provider)
+    const adapterDB = new Database()
+
+    const { handleCtx, httpServer } = await createBot({
+        flow: adapterFlow,
+        provider: adapterProvider,
+        database: adapterDB,
+    })
+
+    adapterProvider.server.post(
+        '/v1/messages',
+        handleCtx(async (bot, req, res) => {
+            const { number, message, urlMedia } = req.body
+            await bot.sendMessage(number, message, { media: urlMedia ?? null })
+            return res.end('sended')
+        })
+    )
+
+    adapterProvider.server.post(
+        '/v1/register',
+        handleCtx(async (bot, req, res) => {
+            const { number, name } = req.body
+            await bot.dispatch('REGISTER_FLOW', { from: number, name })
+            return res.end('trigger')
+        })
+    )
+
+    adapterProvider.server.post(
+        '/v1/samples',
+        handleCtx(async (bot, req, res) => {
+            const { number, name } = req.body
+            await bot.dispatch('SAMPLES', { from: number, name })
+            return res.end('trigger')
+        })
+    )
+
+    adapterProvider.server.post(
+        '/v1/blacklist',
+        handleCtx(async (bot, req, res) => {
+            const { number, intent } = req.body
+            if (intent === 'remove') bot.blacklist.remove(number)
+            if (intent === 'add') bot.blacklist.add(number)
+
+            res.writeHead(200, { 'Content-Type': 'application/json' })
+            return res.end(JSON.stringify({ status: 'ok', number, intent }))
+        })
+    )
+
+    httpServer(+PORT)
+}
+
+main()
