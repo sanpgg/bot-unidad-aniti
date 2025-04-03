@@ -12,6 +12,9 @@ const menuOptions = [
     '4️⃣ ¿Se necesita evidencia para presentar una denuncia?',
     '5️⃣ ¿Las denuncias pueden ser anónimas?',
     '6️⃣ Quiero presentar una denuncia',
+    '7️⃣ ¿Le puedo dar seguimiento a mi denuncia?',
+    '8️⃣ ¿Que cosas NO se denuncian por este medio?',
+    '9️⃣ ¿Quiero denunciar a un servidor público que NO trabaja en el Municipio de San Pedro? ',
 ].join('\n')
 
 const respuestasMenu: Record<string, string> = {
@@ -21,8 +24,7 @@ const respuestasMenu: Record<string, string> = {
         `🔹 Correo electrónico: unidad.anticorrupcion@sanpedro.gob.mx\n` +
         `🔹 Presencial: En las oficinas ubicadas en calle Independencia #316 esquina con Corregidora en el 4to piso, Casco Urbano de San Pedro Garza García, Nuevo León.`,
 
-    '2': `Las denuncias recibidas por el Municipio de San Pedro Garza García son en contra de servidores públicos municipales y de particulares relacionados con el servicio público, las cuales pueden tratarse sobre:\n\n` +
-        `- Faltas de respeto\n- Incumplimiento de funciones\n- Obtención de un beneficio indebido\n- Desvío de recursos públicos\n- Abuso de funciones\n- Conflicto de interés\n- Tráfico de influencias, entre otras.`,
+    '2': `Conductas cometidas por servidores públicos del Municipio de San Pedro Garza García, o bien, por particulares que puedan constituir hechos de corrupción o faltas administrativas.`,
 
     '3': `Es necesario que proporciones elementos de tiempo, modo y lugar, es decir, que tu denuncia responda las siguientes preguntas:\n\n` +
         `❓ ¿Qué pasó?\n❓ ¿Cómo pasó?\n❓ ¿Cuándo pasó?\n❓ ¿Dónde pasó?\n\n` +
@@ -30,14 +32,20 @@ const respuestasMenu: Record<string, string> = {
 
     '4': `No es obligatorio, sin embargo, si tienes fotografías, videos, documentos o testigos, debes proporcionarlos en tu denuncia para fortalecer la investigación.`,
 
-    '5': `Sí, las denuncias pueden ser anónimas. Sin embargo, proporcionar tus datos ayuda a la autoridad investigadora a contactarte si se requiere información adicional.`,
+    '5': `Sí, puedes realizar tu denuncia de manera anónima y se le dará el trámite correspondiente. De igual forma, los datos que proporciones tendrán carácter confidencial.`,
 
     '6': `Las denuncias contra servidores públicos y particulares relacionados con el servicio público de San Pedro Garza García, Nuevo León son recibidas por la Unidad Anticorrupción de la Secretaría de la Contraloría ` + 
         `y Transparencia Municipal. Puedes presentarla a través de las siguientes vías:.\n\n` +
         `🔹 Sistema Integral de Denuncias: https://denuncia.sanpedro.gob.mx/\n` +
         `🔹 Teléfono: 81-21-27-27-40\n` +
         `🔹 Correo electrónico: unidad.anticorrupcion@sanpedro.gob.mx\n` +
-        `🔹 Presencial: Calle Independencia #316 esquina con Corregidora, 4to piso, Casco Urbano de San Pedro Garza García, Nuevo León.`
+        `🔹 Presencial: Calle Independencia #316 esquina con Corregidora, 4to piso, Casco Urbano de San Pedro Garza García, Nuevo León.`,
+    '7': `Sí, al presentar la denuncia en el Sistema Integral de Denuncias disponible en el siguiente enlace: https://denuncia.sanpedro.gob.mx/ se te proporcionará un número de folio, con él podrás darle seguimiento en esa misma plataforma.`,
+
+    '8': `Quejas, tales como luminarias descompuestas, baches, problemas de drenaje, semáforos pueden ser denunciados en el Sistema de Atención Ciudadana, al que se puede acceder mediante el siguiente enlace: https://sanpedro.gob.mx/sam-petrino`,
+
+    '9': `🔹Para denunciar a servidores públicos del Gobierno del Estado de Nuevo León da click en la siguiente liga: https://app.st.nl.gob.mx/incorruptible/RegEmp.aspx \n\n` + 
+         `🔹 Para denunciar a servidores públicos del Gobierno Federal da click en la siguiente liga: https://sidec.funcionpublica.gob.mx`
 }
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
@@ -56,6 +64,7 @@ const setInactivityTimeout = async (
 
   await state.update({ [`timeout_${userId}`]: timerId })
 }
+
 
 
 const reconsultaFlow = addKeyword<Provider, Database>(utils.setEvent('RECONSULTA_FLOW'))
