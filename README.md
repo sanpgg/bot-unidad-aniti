@@ -1,3 +1,62 @@
+# Bot Unidad de Anticorrupción
+
+Este proyecto está construido con **Node.js 20.11.1** y utiliza **Yarn** como gestor de paquetes.
+
+## 🚀 Instalación
+
+Clona el repositorio e instala las dependencias:
+
+```bash
+git clone https://github.com/usuario/proyecto.git
+cd proyecto
+yarn install
+```
+
+## 📊 Modo Desarrollo
+
+Para iniciar el proyecto en modo desarrollo, usa:
+
+```bash
+yarn dev
+```
+
+## 🏗️ Modo Producción
+
+Para producción, ejecuta:
+
+```bash
+yarn install
+yarn build
+yarn start
+```
+
+## 🖥️ Ejecutar en segundo plano con `tmux`
+
+Si deseas mantener el servicio activo después de cerrar la terminal, puedes usar `tmux`:
+
+```bash
+tmux new -s miapp
+yarn start
+```
+
+Luego presiona `Ctrl+B` seguido de `D` para salir del panel sin detener el proceso.
+
+Para volver a conectarte:
+
+```bash
+tmux attach -t miapp
+```
+
+## 🌐 Puerto por defecto
+
+La aplicación corre por defecto en el puerto `3080`. Puedes cambiar este valor desde las variables de entorno o la configuración del proyecto según sea necesario.
+
+```bash
+git clone https://github.com/usuario/proyecto.git
+cd proyecto
+yarn install
+
+
 <p align="center">
   <a href="https://builderbot.vercel.app/">
     <picture>
@@ -24,7 +83,9 @@
 With this library, you can build automated conversation flows agnostic to the WhatsApp provider, set up automated responses for frequently asked questions, receive and respond to messages automatically, and track interactions with customers. Additionally, you can easily set up triggers to expand functionalities limitlessly.
 
 ```
+
 npm create builderbot@latest
+
 ```
 
 
@@ -42,3 +103,4 @@ If you want to discover all the functions and features offered by the library yo
 ## Contact Us
 - [💻 Discord](https://link.codigoencasa.com/DISCORD)
 - [👌 𝕏 (Twitter)](https://twitter.com/leifermendez)
+```
