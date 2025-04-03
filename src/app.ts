@@ -86,7 +86,7 @@ const reconsultaFlow = addKeyword<Provider, Database>(utils.setEvent('RECONSULTA
             return gotoFlow(menuFlow)
         } else if (respuesta === '2') {
             await flowDynamic( 'Gracias por contactarnos. Estamos para ayudarte. 👋\n\n' +
-  'Si deseas comenzar de nuevo, puedes escribir la palabra *hola*.')
+  'Si deseas comenzar de nuevo, puedes escribir la palabra *Hola*.')
         } else {
             return fallBack('Por favor responde con *1* para Sí o *2* para No.')
         }
