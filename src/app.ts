@@ -3,7 +3,7 @@ import { createBot, createProvider, createFlow, addKeyword, utils, EVENTS } from
 import { MemoryDB as Database } from '@builderbot/bot'
 import { BaileysProvider as Provider } from '@builderbot/provider-baileys'
 
-const PORT = process.env.PORT ?? 3008
+const PORT = process.env.PORT ?? 3080
     
 const menuOptions = [
     '1️⃣ ¿Dónde puedo presentar una denuncia en contra de un servidor público de San Pedro?',
