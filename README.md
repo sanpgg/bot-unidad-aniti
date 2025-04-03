@@ -7,7 +7,7 @@ Este proyecto está construido con **Node.js 20.11.1** y utiliza **Yarn** como g
 Clona el repositorio e instala las dependencias:
 
 ```bash
-git clone https://github.com/usuario/proyecto.git
+git clone https://github.com/sanpgg/bot-unidad-aniti.git
 cd proyecto
 yarn install
 ```
@@ -52,9 +52,6 @@ tmux attach -t miapp
 La aplicación corre por defecto en el puerto `3080`. Puedes cambiar este valor desde las variables de entorno o la configuración del proyecto según sea necesario.
 
 ```bash
-git clone https://github.com/usuario/proyecto.git
-cd proyecto
-yarn install
 
 
 <p align="center">
