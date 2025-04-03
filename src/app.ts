@@ -40,12 +40,12 @@ const respuestasMenu: Record<string, string> = {
         `🔹 Teléfono: 81-21-27-27-40\n` +
         `🔹 Correo electrónico: unidad.anticorrupcion@sanpedro.gob.mx\n` +
         `🔹 Presencial: Calle Independencia #316 esquina con Corregidora, 4to piso, Casco Urbano de San Pedro Garza García, Nuevo León.`,
-    '7': `Sí, al presentar la denuncia en el Sistema Integral de Denuncias disponible en el siguiente enlace: https://denuncia.sanpedro.gob.mx/ se te proporcionará un número de folio, con él podrás darle seguimiento en esa misma plataforma.`,
+    '7': `Sí, al presentar la denuncia en el Sistema Integral de Denuncias disponible en el siguiente enlace: \nhttps://denuncia.sanpedro.gob.mx/ se te proporcionará un número de folio, con él podrás darle seguimiento en esa misma plataforma.`,
 
     '8': `Quejas, tales como luminarias descompuestas, baches, problemas de drenaje, semáforos pueden ser denunciados en el Sistema de Atención Ciudadana, al que se puede acceder mediante el siguiente enlace: https://sanpedro.gob.mx/sam-petrino`,
 
-    '9': `🔹Para denunciar a servidores públicos del Gobierno del Estado de Nuevo León da click en la siguiente liga: https://app.st.nl.gob.mx/incorruptible/RegEmp.aspx \n\n` + 
-         `🔹 Para denunciar a servidores públicos del Gobierno Federal da click en la siguiente liga: https://sidec.funcionpublica.gob.mx`
+    '9': `🔹Para denunciar a servidores públicos del Gobierno del Estado de Nuevo León ingresa en el siguiente enlace: https://app.st.nl.gob.mx/incorruptible/RegEmp.aspx \n\n` + 
+         `🔹 Para denunciar a servidores públicos del Gobierno Federal ingresa en el siguiente enlace: https://sidec.funcionpublica.gob.mx`
 }
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
