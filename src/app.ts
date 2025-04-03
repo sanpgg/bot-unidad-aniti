@@ -44,8 +44,8 @@ const respuestasMenu: Record<string, string> = {
 
     '8': `Quejas, tales como luminarias descompuestas, baches, problemas de drenaje, semáforos pueden ser denunciados en el Sistema de Atención Ciudadana, al que se puede acceder mediante el siguiente enlace: https://sanpedro.gob.mx/sam-petrino`,
 
-    '9': `🔹Para denunciar a servidores públicos del Gobierno del Estado de Nuevo León ingresa en el siguiente enlace: https://app.st.nl.gob.mx/incorruptible/RegEmp.aspx \n\n` + 
-         `🔹 Para denunciar a servidores públicos del Gobierno Federal ingresa en el siguiente enlace: https://sidec.funcionpublica.gob.mx`
+    '9': `🔹Para denunciar a servidores públicos del Gobierno del Estado de Nuevo León ingresa en el siguiente enlace: \nhttps://app.st.nl.gob.mx/incorruptible/RegEmp.aspx \n\n` + 
+         `🔹 Para denunciar a servidores públicos del Gobierno Federal ingresa en el siguiente enlace: \nhttps://sidec.funcionpublica.gob.mx`
 }
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
