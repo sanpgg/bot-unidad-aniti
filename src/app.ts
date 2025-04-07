@@ -12,6 +12,24 @@ import { BaileysProvider as Provider } from "@builderbot/provider-baileys";
 
 const PORT = process.env.PORT ?? 3080;
 
+const handleUserInteraction = async (
+  ctx: any,
+  flowDynamic: any,
+  state: any,
+  mensaje: string
+) => {
+  const timeoutKey = `timeout_${ctx.from}`;
+  const previousTimeout = await state.get(timeoutKey);
+
+  if (previousTimeout) {
+    clearTimeout(previousTimeout);
+    await state.update({ [timeoutKey]: null });
+  }
+
+  await flowDynamic(mensaje);
+  await setInactivityTimeout(ctx, flowDynamic, state);
+};
+
 const menuOptions = [
   "1️⃣ ¿Dónde puedo presentar una denuncia en contra de un servidor público de San Pedro?",
   "2️⃣ ¿Qué cosas puedo denunciar?",
@@ -65,7 +83,7 @@ const setInactivityTimeout = async (
   ctx: any,
   flowDynamic: any,
   state: any,
-  ms: number = 300000
+  ms: number = 30000
 ) => {
   const userId = ctx.from;
   const timerId = setTimeout(async () => {
@@ -80,48 +98,55 @@ const setInactivityTimeout = async (
 
 const reconsultaFlow = addKeyword<Provider, Database>(
   utils.setEvent("RECONSULTA_FLOW")
-).addAnswer(
-  "¿Deseas consultar otra opción?\n1️⃣ Sí\n2️⃣ No",
-  { capture: true },
-  async (ctx, { flowDynamic, gotoFlow, fallBack, state }) => {
-    const input = ctx.body.trim().toLowerCase();
-
-    // 🔁 Si el usuario quiere reiniciar el flujo
-    if (["hola", "hi", "hello", "menu", "menú"].includes(input)) {
-      return gotoFlow(welcomeFlow);
+)
+  .addAnswer(
+    "¿Deseas consultar otra opción?\n1️⃣ Sí\n2️⃣ No",
+    {},
+    async (ctx, { flowDynamic, state }) => {
+      // ⏰ Establecer el timeout después de enviar la pregunta
+      await handleUserInteraction(ctx, flowDynamic, state, "");
     }
+  )
+  .addAnswer(
+    "",
+    { capture: true },
+    async (ctx, { flowDynamic, gotoFlow, fallBack, state }) => {
+      const timeoutKey = `timeout_${ctx.from}`;
+      const previousTimeout = await state.get(timeoutKey);
 
-    const timeoutKey = `timeout_${ctx.from}`;
-    const previousTimeout = await state.get(timeoutKey);
+      if (previousTimeout) {
+        clearTimeout(previousTimeout);
+        await state.update({ [timeoutKey]: null });
+      }
 
-    if (previousTimeout) {
-      clearTimeout(previousTimeout);
-      await state.update({ [`timeout_${ctx.from}`]: null }); // limpia la referencia
+      const respuesta = ctx.body.trim();
+      const input = respuesta.toLowerCase();
+
+      if (["hola", "hi", "hello", "menu", "menú"].includes(input)) {
+        return gotoFlow(welcomeFlow);
+      }
+
+      if (respuesta === "1") {
+        return gotoFlow(menuFlow);
+      } else if (respuesta === "2") {
+        await flowDynamic(
+          "Gracias por contactarnos. Estamos para ayudarte. 👋\n\n" +
+            "Si deseas comenzar de nuevo, puedes escribir la palabra *Hola*."
+        );
+      } else {
+        return fallBack("Por favor responde con *1* para Sí o *2* para No.");
+      }
     }
-
-    const respuesta = ctx.body.trim();
-
-    if (respuesta === "menú" || respuesta === "menu") {
-      return gotoFlow(menuFlow);
-    }
-
-    if (respuesta === "1") {
-      return gotoFlow(menuFlow);
-    } else if (respuesta === "2") {
-      await flowDynamic(
-        "Gracias por contactarnos. Estamos para ayudarte. 👋\n\n" +
-          "Si deseas comenzar de nuevo, puedes escribir la palabra *Hola*."
-      );
-    } else {
-      return fallBack("Por favor responde con *1* para Sí o *2* para No.");
-    }
-  }
-);
+  );
 
 const menuFlow = addKeyword<Provider, Database>(["menú", "menu"])
   .addAction(async (ctx, { flowDynamic, state }) => {
-    await flowDynamic("Selecciona una opción del menú:\n\n" + menuOptions);
-    await setInactivityTimeout(ctx, flowDynamic, state); // ⏰
+    await handleUserInteraction(
+      ctx,
+      flowDynamic,
+      state,
+      "Selecciona una opción del menú:\n\n" + menuOptions
+    );
   })
   .addAnswer(
     "",
@@ -180,20 +205,42 @@ const welcomeFlow = addKeyword<Provider, Database>([
   return gotoFlow(menuFlow);
 });
 
+const usersBlocked = []; //['1418****']
+const API_TOKEN =
+  "bRGHEnYqkpeGwXXJAH2LHxYVQikttottwCfBGHVQ9ksrxJEVdN2mJgHYvqCpf9EGizpUpGgDA9vBffuYJXzvgEU7TthRnZPmTNZn";
+
+function authenticateToken(req, res, next) {
+  const token = req.headers["authorization"];
+  const expectedToken = `Bearer ${API_TOKEN}}`;
+
+  if (!token || token !== expectedToken) {
+    res.writeHead(401, { "Content-Type": "application/json" });
+    return res.end(JSON.stringify({ error: "Unauthorized" }));
+  }
+
+  next(); // Token válido
+}
+
 const main = async () => {
   const adapterFlow = createFlow([welcomeFlow, menuFlow, reconsultaFlow]);
 
   const adapterProvider = createProvider(Provider);
   const adapterDB = new Database();
 
-  const { handleCtx, httpServer } = await createBot({
-    flow: adapterFlow,
-    provider: adapterProvider,
-    database: adapterDB,
-  });
+  const { handleCtx, httpServer } = await createBot(
+    {
+      flow: adapterFlow,
+      provider: adapterProvider,
+      database: adapterDB,
+    },
+    {
+      blackList: usersBlocked,
+    }
+  );
 
   adapterProvider.server.post(
     "/v1/messages",
+    authenticateToken,
     handleCtx(async (bot, req, res) => {
       const { number, message, urlMedia } = req.body;
       await bot.sendMessage(number, message, { media: urlMedia ?? null });
@@ -203,6 +250,7 @@ const main = async () => {
 
   adapterProvider.server.post(
     "/v1/register",
+    authenticateToken,
     handleCtx(async (bot, req, res) => {
       const { number, name } = req.body;
       await bot.dispatch("REGISTER_FLOW", { from: number, name });
@@ -212,6 +260,7 @@ const main = async () => {
 
   adapterProvider.server.post(
     "/v1/samples",
+    authenticateToken,
     handleCtx(async (bot, req, res) => {
       const { number, name } = req.body;
       await bot.dispatch("SAMPLES", { from: number, name });
@@ -221,6 +270,7 @@ const main = async () => {
 
   adapterProvider.server.post(
     "/v1/blacklist",
+    authenticateToken,
     handleCtx(async (bot, req, res) => {
       const { number, intent } = req.body;
       if (intent === "remove") bot.blacklist.remove(number);
