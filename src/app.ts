@@ -100,7 +100,7 @@ const reconsultaFlow = addKeyword<Provider, Database>(
   utils.setEvent("RECONSULTA_FLOW")
 )
   .addAnswer(
-    "¿Deseas consultar otra opción?\n\n1️⃣ Sí\n2️⃣ No",
+    "¿Deseas consultar otra opción?\n1️⃣ Sí\n2️⃣ No",
     {},
     async (ctx, { flowDynamic, state }) => {
       // ⏰ Establecer el timeout después de enviar la pregunta
