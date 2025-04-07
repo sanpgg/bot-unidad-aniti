@@ -52,11 +52,8 @@ tmux attach -t miapp
 La aplicación corre por defecto en el puerto `3080`. Puedes cambiar este valor desde las variables de entorno o la configuración del proyecto según sea necesario.
 
 <p align="center">
-  <a href="https://builderbot.vercel.app/">
-    <picture>
-      <img src="https://builderbot.vercel.app/assets/thumbnail-vector.png" height="80">
-    </picture>
-    <h2 align="center">BuilderBot</h2>
+  <a href="https://github.com/jorgechavarriaga/builder_bot_baileys_examples">
+    <h2 align="center">Ejemplo</h2>
   </a>
 </p>
 
