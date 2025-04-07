@@ -83,7 +83,7 @@ const setInactivityTimeout = async (
   ctx: any,
   flowDynamic: any,
   state: any,
-  ms: number = 30000
+  ms: number = 600000
 ) => {
   const userId = ctx.from;
   const timerId = setTimeout(async () => {
