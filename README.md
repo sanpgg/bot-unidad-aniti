@@ -37,9 +37,9 @@ Si deseas mantener el servicio activo después de cerrar la terminal, puedes usa
 ```bash
 tmux new -s bot-unidad
 yarn start
-```
 
-Luego presiona `Ctrl+B` seguido de `D` para salir del panel sin detener el proceso.
+# Luego presiona Ctrl + B, suelta ambas teclas y presiona D para salir del panel sin detener el proceso.
+```
 
 Para volver a conectarte:
 
