@@ -35,7 +35,7 @@ yarn start
 Si deseas mantener el servicio activo después de cerrar la terminal, puedes usar `tmux`:
 
 ```bash
-tmux new -s miapp
+tmux new -s bot-unidad
 yarn start
 ```
 
@@ -44,7 +44,7 @@ Luego presiona `Ctrl+B` seguido de `D` para salir del panel sin detener el proce
 Para volver a conectarte:
 
 ```bash
-tmux attach -t miapp
+tmux attach -t bot-unidad
 ```
 
 ## 🌐 Puerto por defecto
