@@ -211,7 +211,7 @@ const API_TOKEN =
 
 function authenticateToken(req, res, next) {
   const token = req.headers["authorization"];
-  const expectedToken = `Bearer ${API_TOKEN}}`;
+  const expectedToken = `Bearer ${API_TOKEN}`;
 
   if (!token || token !== expectedToken) {
     res.writeHead(401, { "Content-Type": "application/json" });
