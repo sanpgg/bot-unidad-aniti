@@ -190,13 +190,6 @@ const welcomeFlow = addKeyword<Provider, Database>([
 ]).addAction(async (ctx, { state, flowDynamic, fallBack, gotoFlow }) => {
   const name = ctx.pushName || "Usuario";
 
-  if(name != 'Jorge'){
-    
-  return fallBack(
-          "Hola," + name
-        );
-  }
-
   await state.update({ name });
 
   await flowDynamic(
