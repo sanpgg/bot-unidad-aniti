@@ -8,7 +8,7 @@ import {
     EVENTS 
 } from '@builderbot/bot'
 import { MemoryDB as Database } from '@builderbot/bot'
-import { BaileysProvider as Provider } from '@builderbot/provider-baileys'
+import { BaileysProvider as Provider } from 'builderbot-provider-sherpa'
 
 const PORT = process.env.PORT ?? 3080
 
@@ -187,8 +187,15 @@ const welcomeFlow = addKeyword<Provider, Database>([
   EVENTS.WELCOME,
   "menu",
   "menú",
-]).addAction(async (ctx, { state, flowDynamic, gotoFlow }) => {
+]).addAction(async (ctx, { state, flowDynamic, fallBack, gotoFlow }) => {
   const name = ctx.pushName || "Usuario";
+
+  if(name != 'Jorge'){
+    
+  return fallBack(
+          "Hola," + name
+        );
+  }
 
   await state.update({ name });
 
@@ -221,10 +228,14 @@ function authenticateToken(req, res, next) {
 const main = async () => {
     const adapterFlow = createFlow([welcomeFlow, menuFlow, reconsultaFlow])
     
-    const adapterProvider = createProvider(Provider, {
+ const adapterProvider = createProvider(Provider, {
         version: [2, 3000, 1025190524],
-        writeMyself: 'both'
-    });
+        browser: ["Windows", "Chrome", "Chrome 114.0.5735.198"],
+        writeMyself: true, // Escribe mensajes propios para ver conversación completa
+        experimentalStore: true, // Significantly reduces resource consumption
+        timeRelease: 86400000 // Cleans up data every 24 hours (in milliseconds)
+    })
+
 
     const adapterDB = new Database()
 
