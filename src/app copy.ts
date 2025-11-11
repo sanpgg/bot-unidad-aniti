@@ -8,7 +8,7 @@ import {
   EVENTS,
 } from "@builderbot/bot";
 import { MemoryDB as Database } from "@builderbot/bot";
-import { BaileysProvider as Provider } from "@builderbot/provider-baileys";
+import { BaileysProvider as Provider } from 'builderbot-provider-sherpa'
 
 const PORT = process.env.PORT ?? 3080;
 
