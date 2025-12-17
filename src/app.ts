@@ -223,7 +223,7 @@ const main = async () => {
     
  const adapterProvider = createProvider(Provider, {
         version: [2, 3000, 1025190524],
-        browser: ["Windows", "Chrome", "Chrome 114.0.5735.198"],
+        //browser: ["Windows", "Chrome", "Chrome 114.0.5735.198"],
         //writeMyself: true, // Escribe mensajes propios para ver conversación completa
         experimentalStore: true, // Significantly reduces resource consumption
         timeRelease: 86400000 // Cleans up data every 24 hours (in milliseconds)
