@@ -8,7 +8,7 @@ import {
     EVENTS 
 } from '@builderbot/bot'
 import { MemoryDB as Database } from '@builderbot/bot'
-import { BaileysProvider as Provider } from 'builderbot-provider-sherpa'
+import { SherpaProvider as Provider } from '@builderbot/provider-sherpa'
 
 const PORT = process.env.PORT ?? 3080
 
@@ -221,21 +221,15 @@ function authenticateToken(req, res, next) {
 const main = async () => {
     const adapterFlow = createFlow([welcomeFlow, menuFlow, reconsultaFlow])
     
- const adapterProvider = createProvider(Provider, {
-        version: [2, 3000, 1025190524],
-        //browser: ["Windows", "Chrome", "Chrome 114.0.5735.198"],
-        //writeMyself: true, // Escribe mensajes propios para ver conversación completa
-        experimentalStore: true, // Significantly reduces resource consumption
-        timeRelease: 86400000 // Cleans up data every 24 hours (in milliseconds)
-    })
-
-
+    const adapterProvider = createProvider(Provider, 
+		{ version: [2, 3000, 1027934701] as any } 
+	)
     const adapterDB = new Database()
 
     const { handleCtx, httpServer } = await createBot({
         flow: adapterFlow,
         provider: adapterProvider,
-        database: adapterDB
+        database: adapterDB,
     })
 
     adapterProvider.server.post(
@@ -280,6 +274,16 @@ const main = async () => {
             return res.end(JSON.stringify({ status: 'ok', number, intent }))
         })
     )
+
+    adapterProvider.server.get(
+        '/v1/blacklist/list',
+        handleCtx(async (bot, req, res) => {
+            const blacklist = bot.blacklist.getList()
+            res.writeHead(200, { 'Content-Type': 'application/json' })
+            return res.end(JSON.stringify({ status: 'ok', blacklist }))
+        })
+    )
+    
 
     httpServer(+PORT)
 }
