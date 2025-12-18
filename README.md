@@ -1,13 +1,61 @@
+# Bot Unidad de Anticorrupción
+
+Este proyecto está construido con **Node.js 20.11.1** y utiliza **Yarn** como gestor de paquetes.
+
+## 🚀 Instalación
+
+Clona el repositorio e instala las dependencias:
+
+```bash
+git clone https://github.com/usuario/proyecto.git
+cd proyecto
+yarn install
+```
+
+## 📊 Modo Desarrollo
+
+Para iniciar el proyecto en modo desarrollo, usa:
+
+```bash
+yarn dev
+```
+
+## 🏗️ Modo Producción
+
+Para producción, ejecuta:
+
+```bash
+yarn install
+yarn build
+yarn start
+```
+
+## 🖥️ Ejecutar en segundo plano con `tmux`
+
+Si deseas mantener el servicio activo después de cerrar la terminal, puedes usar `tmux`:
+
+```bash
+tmux new -s bot-unidad
+yarn start
+
+# Luego presiona Ctrl + B, suelta ambas teclas y presiona D para salir del panel sin detener el proceso.
+```
+
+Para volver a conectarte:
+
+```bash
+tmux attach -t bot-unidad
+```
+
+## 🌐 Puerto por defecto
+
+La aplicación corre por defecto en el puerto `3080`. Puedes cambiar este valor desde las variables de entorno o la configuración del proyecto según sea necesario.
+
 <p align="center">
-  <a href="https://builderbot.app/">
-    <picture>
-      <img src="https://builderbot.app/assets/thumbnail-vector.png" height="80">
-    </picture>
-    <h2 align="center">BuilderBot</h2>
+  <a href="https://github.com/jorgechavarriaga/builder_bot_baileys_examples">
+    <h2 align="center">Ejemplo</h2>
   </a>
 </p>
-
-
 
 <p align="center">
   <a aria-label="NPM version" href="https://www.npmjs.com/package/@builderbot/bot">
@@ -18,27 +66,30 @@
   </a>
 </p>
 
-
 ## Getting Started
 
 With this library, you can build automated conversation flows agnostic to the WhatsApp provider, set up automated responses for frequently asked questions, receive and respond to messages automatically, and track interactions with customers. Additionally, you can easily set up triggers to expand functionalities limitlessly.
 
 ```
-npm create builderbot@latest
-```
 
+npm create builderbot@latest
+
+```
 
 ## Documentation
 
-Visit [builderbot](https://builderbot.app/) to view the full documentation.
-
+Visit [builderbot](https://builderbot.vercel.app/) to view the full documentation.
 
 ## Official Course
 
 If you want to discover all the functions and features offered by the library you can take the course.
 [View Course](https://app.codigoencasa.com/courses/builderbot?refCode=LEIFER)
 
-
 ## Contact Us
+
 - [💻 Discord](https://link.codigoencasa.com/DISCORD)
 - [👌 𝕏 (Twitter)](https://twitter.com/leifermendez)
+
+```
+
+```
