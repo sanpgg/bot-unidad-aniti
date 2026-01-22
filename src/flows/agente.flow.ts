@@ -8,7 +8,9 @@ export const agenteFlow = addKeyword<Provider, Database>(utils.setEvent("AGENTE_
   .addAction(async (ctx, { flowDynamic }) => {
     // 1) Bloquear al usuario para que el bot no mande más mensajes al ciudadano
     try {
+      
       await blacklistAdd(ctx.from);
+
     } catch {
       // ignore
     }
@@ -51,4 +53,6 @@ export const agenteFlow = addKeyword<Provider, Database>(utils.setEvent("AGENTE_
           "unidad.anticorrupcion@sanpedro.gob.mx"
       );
     }
+
+
   });

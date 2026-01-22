@@ -7,7 +7,8 @@ import { Provider, Database } from "./bot";
 import { env } from "./config/env";
 import { authenticateToken } from "./middlewares/authToken";
 
-import { welcomeFlow, menuFlow, reconsultaFlow, denunciaFlow, agenteFlow } from "./flows";
+import { welcomeFlow, menuFlow, reconsultaFlow, denunciaFlow, agenteFlow, denunciaAnonimaFlow, 
+  denunciaIdentificadaFlow, denunciaHechosFlow } from "./flows";
 
 function ensureBot(bot: any, res: any) {
   if (!bot) {
@@ -26,6 +27,9 @@ const main = async () => {
     reconsultaFlow,
     denunciaFlow,
     agenteFlow,
+    denunciaAnonimaFlow,
+    denunciaIdentificadaFlow,
+    denunciaHechosFlow
   ]);
 
   //https://wppconnect.io/whatsapp-versions/

@@ -5,22 +5,21 @@ import { handleUserInteraction, clearInactivityTimeout, shouldReset } from "../u
 import { sleep } from "../utils/sleep";
 import { reconsultaFlow } from "./reconsulta.flow";
 import { agenteFlow } from "./agente.flow"
-import { denunciaFlow } from "./denuncia.flow";
+import { denunciaFlow } from "./denuncia/denuncia.flow";
 import { welcomeFlow } from "./welcome.flow";
 
 
 const menuOptions = [
-  "1️⃣ ¿Dónde puedo presentar una denuncia en contra de un servidor público de San Pedro?",
+  "1️⃣ Quiero presentar una denuncia por este medio.",
   "2️⃣ ¿Qué cosas puedo denunciar?",
   "3️⃣ ¿Qué se necesita para presentar una denuncia?",
   "4️⃣ ¿Se necesita evidencia para presentar una denuncia?",
   "5️⃣ ¿Las denuncias pueden ser anónimas?",
-  "6️⃣ Quiero presentar una denuncia",
+  "6️⃣ Otros canales de denuncia",
   "7️⃣ ¿Le puedo dar seguimiento a mi denuncia?",
   "8️⃣ ¿Que cosas NO se denuncian por este medio?",
   "9️⃣ ¿Quiero denunciar a un servidor público que NO trabaja en el Municipio de San Pedro? ",
-  "🔟 Denunciar a un funcionario (flujo guiado)",
-  "1️⃣1️⃣ Hablar con un agente",
+  "🔟 Hablar con un agente",
 ].join("\n");
 
 const respuestasMenu: Record<string, string> = {
@@ -77,11 +76,11 @@ export const menuFlow = addKeyword<Provider, Database>([
 
       await clearInactivityTimeout(ctx, state);
 
-      // Opción 10 y 11 por evento
-      if (input === "10" || inputRaw.includes("🔟")) {
+      // Opción 1 y 10 por evento
+      if (input === "1" || inputRaw.includes("1️⃣")) {
         return gotoFlow(denunciaFlow);
       }
-      if (input === "11" || inputRaw.includes("1️⃣1️⃣")) {
+      if (input === "10" || inputRaw.includes("🔟")) {
         return gotoFlow(agenteFlow);
       }
 
