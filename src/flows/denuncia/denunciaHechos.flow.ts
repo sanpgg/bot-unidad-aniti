@@ -6,6 +6,7 @@ import { extractMedia } from "./denuncia.utils";
 import { sendMessageToAgents } from "../../services/broadcast";
 import { isWithinBusinessHours } from "../../utils/time";
 import { menuFlow } from "../menu.flow";
+import { sleep } from "../../utils/sleep";
 
 export const denunciaHechosFlow = addKeyword<Provider, Database>(
   utils.setEvent("DENUNCIA_HECHOS_FLOW"),
@@ -132,24 +133,36 @@ export const denunciaHechosFlow = addKeyword<Provider, Database>(
 
 const dentro = isWithinBusinessHours();
 
+        await sleep(2000);
+
         await flowDynamic(
-          "Tu denuncia fue registrada y enviada a la *Unidad Anticorrupción de la Secretaría de la Contraloría y Transparencia*, en breve uno de nuestros agentes se comunicará contigo para informarte el folio a través del cual podrás dar seguimiento"
+          "✅ Tu denuncia fue registrada y enviada a la *Unidad Anticorrupción de la Secretaría de la Contraloría y Transparencia*, en breve uno de nuestros agentes se comunicará contigo para informarte el folio a través del cual podrás dar seguimiento"
         );
+        
 
         if (dentro) {
-          await flowDynamic(
+          
+          /*await flowDynamic(
             "✅ *¡Gracias! Tu denuncia fue registrada.*\n\n" +
               "👤 Un enlace dará seguimiento a tu caso dentro del horario de atención.",
-          );
+          );*/
+
         } else {
+          
+          await sleep(2000);
           await flowDynamic(
-            "✅ *¡Gracias! Tu denuncia fue registrada.*\n\n" +
+            //"✅ *¡Gracias! Tu denuncia fue registrada.*\n\n" +
               "🕘 *Horario de atención:* Lunes a viernes | 08:00 a 16:00\n" +
               "📩 Si tu mensaje llega fuera de este horario, será atendido a la brevedad posible.",
           );
         }
 
+        await sleep(2000);
+        
         await flowDynamic("_Te regreso al menú principal..._");
+
+        
+        await sleep(1000);
         return gotoFlow(menuFlow);
       }
 
