@@ -130,7 +130,11 @@ export const denunciaHechosFlow = addKeyword<Provider, Database>(
           );
         }
 
-        const dentro = isWithinBusinessHours();
+const dentro = isWithinBusinessHours();
+
+        await flowDynamic(
+          "Tu denuncia fue registrada y enviada a la *Unidad Anticorrupción de la Secretaría de la Contraloría y Transparencia*, en breve uno de nuestros agentes se comunicará contigo para informarte el folio a través del cual podrás dar seguimiento"
+        );
 
         if (dentro) {
           await flowDynamic(
