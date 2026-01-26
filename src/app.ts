@@ -6,6 +6,7 @@ import { Provider, Database } from "./bot";
 
 import { env } from "./config/env";
 import { authenticateToken } from "./middlewares/authToken";
+import { initializeMessageLogger, logOutgoingMessage, getMessageService } from "./middlewares/messageLogger";
 
 import { welcomeFlow, menuFlow, reconsultaFlow, denunciaFlow, agenteFlow, denunciaAnonimaFlow, 
   denunciaIdentificadaFlow, denunciaHechosFlow } from "./flows";
@@ -21,6 +22,8 @@ function ensureBot(bot: any, res: any) {
 
 
 const main = async () => {
+  initializeMessageLogger();
+  
   const adapterFlow = createFlow([
     welcomeFlow,
     menuFlow,
@@ -56,6 +59,7 @@ const main = async () => {
 
         const { number, message, urlMedia } = req.body;
         await b.sendMessage(number, message, { media: urlMedia ?? null });
+        await logOutgoingMessage(number, message, 'api_endpoint', urlMedia);
         return res.end("sended");
 
     })
@@ -116,6 +120,25 @@ const main = async () => {
       const blacklist = b.blacklist.getList();
       res.writeHead(200, { "Content-Type": "application/json" });
       return res.end(JSON.stringify({ status: "ok", blacklist }));
+    })
+  );
+
+  adapterProvider.server.get(
+    "/v1/messages",
+    handleCtx(async (bot, req, res) => {
+      const messageService = getMessageService();
+      if (!messageService) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        return res.end(JSON.stringify({ error: "Message service not initialized" }));
+      }
+
+      const { phoneNumber, limit } = req.query;
+      const messages = phoneNumber 
+        ? await messageService.getMessagesByPhone(phoneNumber as string, parseInt(limit as string) || 50)
+        : await messageService.getAllMessages(parseInt(limit as string) || 100);
+
+      res.writeHead(200, { "Content-Type": "application/json" });
+      return res.end(JSON.stringify({ status: "ok", messages }));
     })
   );
 

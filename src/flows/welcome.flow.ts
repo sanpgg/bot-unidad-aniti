@@ -2,6 +2,7 @@ import { addKeyword, EVENTS, utils } from "@builderbot/bot";
 import { Provider, Database } from "../bot";
 import { isAllowedNumber } from "../middlewares/allowlist";
 import { menuFlow } from "./menu.flow";
+import { logIncomingMessage } from "../middlewares/messageLogger";
 
 
 export const welcomeFlow = addKeyword<Provider, Database>([
@@ -13,7 +14,8 @@ export const welcomeFlow = addKeyword<Provider, Database>([
   "menú",
   utils.setEvent("WELCOME_FLOW") as any,
 ]).addAction(async (ctx, { state, flowDynamic, gotoFlow }) => {
-  //console.log(ctx.from)
+  await logIncomingMessage(ctx, 'welcome');
+  
   if (!isAllowedNumber(ctx.from)) {
     // ignora: no responde y corta flujo
     //console.log("Ignorado");
