@@ -6,14 +6,6 @@ import { sendMessageToAgents } from "../services/broadcast";
 
 export const agenteFlow = addKeyword<Provider, Database>(utils.setEvent("AGENTE_FLOW"))
   .addAction(async (ctx, { flowDynamic }) => {
-    // 1) Bloquear al usuario para que el bot no mande más mensajes al ciudadano
-    try {
-      
-      await blacklistAdd(ctx.from);
-
-    } catch {
-      // ignore
-    }
 
     const dentro = isWithinBusinessHours();
 
@@ -54,5 +46,13 @@ export const agenteFlow = addKeyword<Provider, Database>(utils.setEvent("AGENTE_
       );
     }
 
+    // 1) Bloquear al usuario para que el bot no mande más mensajes al ciudadano
+    try {
+      
+      await blacklistAdd(ctx.from);
 
+    } catch {
+      // ignore
+    }
+    
   });
