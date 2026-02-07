@@ -83,6 +83,9 @@ export const menuFlow = addKeyword<Provider, Database>([
       if (input === "10" || inputRaw.includes("🔟")) {
         return gotoFlow(agenteFlow);
       }
+      if (input.toLowerCase() === "menu") {
+        return gotoFlow(agenteFlow);
+      }
 
       if (respuestasMenu[input]) {
         await flowDynamic(respuestasMenu[input]);
@@ -91,7 +94,7 @@ export const menuFlow = addKeyword<Provider, Database>([
       }
 
       return fallBack(
-        "Por favor selecciona una opción válida del 1 al 11 o escribe *MENÚ* para verlas nuevamente."
+        "Por favor selecciona una opción válida del 1 al 10 o escribe *MENÚ* para verlas nuevamente."
       );
     }
   );
