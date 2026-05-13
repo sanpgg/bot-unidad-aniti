@@ -93,6 +93,48 @@ version: [2, 3000, 1039410630] as any,
 ./deploy.sh usuario@ip-del-servidor
 ```
 
+### Pasos manuales (sin usar deploy.sh)
+
+**1. Conectarse al servidor por SSH:**
+```bash
+ssh usuario@ip-del-servidor
+```
+
+**2. Ir al directorio del proyecto:**
+```bash
+cd /var/www/bot-unidad/src
+```
+
+**3. Editar el archivo y actualizar la versión:**
+```bash
+nano app.ts
+```
+Buscar la línea con `version:` y reemplazar el último número por el de la versión nueva. Guardar con `Ctrl + O`, salir con `Ctrl + X`.
+
+**4. Obtener el PID del proceso activo en el puerto 3080:**
+```bash
+sudo lsof -i :3080
+```
+
+**5. Matar el proceso (reemplazar el número por el PID real):**
+```bash
+sudo kill -9 <PID>
+```
+
+**6. Conectarse a la sesión tmux:**
+```bash
+tmux attach -t bot-unidad
+```
+
+**7. Compilar y arrancar el bot:**
+```bash
+cd /var/www/bot-unidad
+sudo yarn build
+sudo yarn start
+```
+
+> Para salir de tmux sin detener el proceso: `Ctrl + B`, luego `D`.
+
 <p align="center">
   <a href="https://github.com/jorgechavarriaga/builder_bot_baileys_examples">
     <h2 align="center">Ejemplo</h2>
