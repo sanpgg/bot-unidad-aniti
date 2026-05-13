@@ -51,6 +51,48 @@ tmux attach -t bot-unidad
 
 La aplicación corre por defecto en el puerto `3080`. Puedes cambiar este valor desde las variables de entorno o la configuración del proyecto según sea necesario.
 
+## 🚀 Deploy al servidor
+
+Compila localmente y sube el build al servidor con un solo comando:
+
+```bash
+./deploy.sh usuario@ip-del-servidor
+```
+
+El script hace automáticamente: build local → sube `dist/app.js` por SCP → mata el proceso en el puerto 3080 → reinicia el bot en la sesión tmux `bot-unidad`.
+
+---
+
+## ⚠️ Error recurrente: versión de WhatsApp desactualizada
+
+El provider Sherpa requiere que la versión de WhatsApp en `src/app.ts` esté vigente. WhatsApp publica nuevas versiones frecuentemente y las anteriores expiran (~2 meses).
+
+**Síntoma:** el bot deja de conectarse o recibir mensajes.
+
+### Pasos para resolverlo
+
+1. Consultar la versión más reciente en: https://wppconnect.io/whatsapp-versions/
+
+2. Tomar el número de la versión más reciente, por ejemplo `2.3000.1039410630`.
+
+3. Editar `src/app.ts` y actualizar el array `version`:
+
+```typescript
+// Antes
+version: [2, 3000, 1034143497] as any,
+
+// Después (con la versión nueva)
+version: [2, 3000, 1039410630] as any,
+```
+
+> El formato es `[major, minor, patch]` — ignorar el sufijo `-alpha` que aparece en la página.
+
+4. Hacer deploy:
+
+```bash
+./deploy.sh usuario@ip-del-servidor
+```
+
 <p align="center">
   <a href="https://github.com/jorgechavarriaga/builder_bot_baileys_examples">
     <h2 align="center">Ejemplo</h2>

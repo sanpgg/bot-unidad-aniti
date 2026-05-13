@@ -37,7 +37,7 @@ const main = async () => {
 
   //https://wppconnect.io/whatsapp-versions/
   const adapterProvider = createProvider(Provider, {
-    version: [2, 3000, 1027934701] as any,
+    version: [2, 3000, 1039410630] as any,
   });
 
   const adapterDB = new Database();

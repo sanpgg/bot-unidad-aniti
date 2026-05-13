@@ -9,3 +9,4 @@ node_modules
 *.log
 *qr.png
 /data
+deploy.sh
